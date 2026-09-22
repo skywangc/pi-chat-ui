@@ -4,9 +4,25 @@
 
 覆盖侧栏、流式 Markdown、模型消息适配、工具调用、思考过程和子代理详情。内置浅色/深色主题、组件参数、离线交互样板与合成事件，不需要获取外部 UI 产品仓库。
 
-## 安装到项目
+## 安装
+推荐使用 [skills CLI](https://skills.sh)（自动识别 Pi、Claude Code 等已安装的 agent 并建立链接，支持统一更新）：
 
-在目标项目根目录执行（若目标目录已存在，先检查，避免覆盖已有技能）：
+```bash
+# 项目级安装（在目标项目根目录执行）
+npx skills add skywangc/pi-chat-ui
+
+# 全局安装（本机所有项目可用）
+npx skills add skywangc/pi-chat-ui -g
+```
+
+检查与更新已安装的技能：
+
+```bash
+npx skills check    # 检查更新
+npx skills update   # 更新全部技能
+```
+
+也可以用 Git 直接安装到项目（若目标目录已存在，先检查，避免覆盖已有技能）：
 
 ```bash
 git clone https://github.com/skywangc/pi-chat-ui.git .agents/skills/pi-chat-ui
@@ -46,7 +62,7 @@ python3 -m http.server 8769 --bind 127.0.0.1 --directory assets
 python3 scripts/validate_bundle.py
 ```
 
-项目内通过 Git 安装后，可在技能目录执行 `git pull --ff-only` 更新；有本地改动时先保存并核对差异。
+通过 skills CLI 安装的技能，在本机任意位置执行 `npx skills update` 即可更新。用 Git 直接安装的，可在技能目录执行 `git pull --ff-only` 更新；有本地改动时先保存并核对差异。
 
 校验器检查本地引用、主题变量、离线资源和 RPC 样例格式。样板与截图是源码参数重建参考，不是原产品截图，也不代表实际 pi/provider 联调已完成。应用运行仍需要自己的 React、Tauri 和 pi 环境。
 
