@@ -1,0 +1,209 @@
+/*
+ * 交互组件 token 子集（自包含，不依赖 Tailwind 编译、CDN 或外部字体）。
+ * 与 pi-chat-ui 的主题 token 同源；单独使用本包时以本文件为准。
+ * 约定：--pci-* 前缀；浅色为默认，[data-theme="dark"] 覆盖。
+ */
+
+:root {
+ /* 背景层次（工作台三级背景） */
+ --pci-bg: #ffffff;
+ --pci-bg-subtle: #f7f7f8;
+ --pci-bg-muted: #ececee;
+ --pci-bg-overlay: rgba(0, 0, 0, 0.32);
+
+ /* 文本层级 */
+ --pci-text: #1a1a1e;
+ --pci-text-secondary: #5c5c66;
+ --pci-text-tertiary: #8f8f9a;
+ --pci-text-inverted: #ffffff;
+
+ /* 边框与分隔 */
+ --pci-border: rgba(0, 0, 0, 0.1);
+ --pci-border-strong: rgba(0, 0, 0, 0.16);
+
+ /* 强调（品牌蓝，用于选中态/焦点/链接） */
+ --pci-accent: #2f6fed;
+ --pci-accent-subtle: rgba(47, 111, 237, 0.1);
+
+ /* 状态 */
+ --pci-warning: #b45309;
+ --pci-danger: #dc2626;
+
+ /* 几何 */
+ --pci-radius-md: 8px; /* 菜单/输入框 */
+ --pci-radius-sm: 6px; /* chip/按钮 */
+ --pci-font-size: 14px;
+ --pci-font-size-sm: 12.5px;
+ --pci-line-height: 1.55;
+
+ /* 触发面板 */
+ --pci-panel-max-height: 320px;
+ --pci-panel-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 0 0 1px var(--pci-border);
+
+ /* 滚动条 */
+ --pci-scrollbar-size: 10px;
+}
+
+[data-theme="dark"] {
+ --pci-bg: #1b1b1f;
+ --pci-bg-subtle: #222227;
+ --pci-bg-muted: #2c2c33;
+ --pci-bg-overlay: rgba(0, 0, 0, 0.55);
+
+ --pci-text: #ededf0;
+ --pci-text-secondary: #a8a8b3;
+ --pci-text-tertiary: #71717c;
+ --pci-text-inverted: #16161a;
+
+ --pci-border: rgba(255, 255, 255, 0.12);
+ --pci-border-strong: rgba(255, 255, 255, 0.18);
+
+ --pci-accent: #5b8df5;
+ --pci-accent-subtle: rgba(91, 141, 245, 0.16);
+
+ --pci-warning: #f59e0b;
+ --pci-danger: #f87171;
+
+ --pci-panel-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--pci-border);
+}
+
+/* ── 触发面板（/ 与 @ 共用） ── */
+
+.zc-trigger-panel {
+ position: absolute;
+ left: 0;
+ right: 0;
+ bottom: calc(100% + 6px);
+ max-height: var(--pci-panel-max-height);
+ overflow-y: auto;
+ background: var(--pci-bg);
+ border-radius: var(--pci-radius-md);
+ box-shadow: var(--pci-panel-shadow);
+ font-size: var(--pci-font-size);
+ padding: 4px;
+ z-index: 30;
+}
+
+.zc-trigger-panel__group {
+ padding: 6px 8px 2px;
+ font-size: var(--pci-font-size-sm);
+ color: var(--pci-text-tertiary);
+ user-select: none;
+}
+
+.zc-trigger-panel__item {
+ display: flex;
+ align-items: baseline;
+ gap: 8px;
+ padding: 6px 8px;
+ border-radius: var(--pci-radius-sm);
+ cursor: pointer;
+}
+
+.zc-trigger-panel__item[data-active="true"] {
+ background: var(--pci-accent-subtle);
+}
+
+.zc-trigger-panel__item-name {
+ font-weight: 500;
+ white-space: nowrap;
+}
+
+.zc-trigger-panel__item-desc {
+ color: var(--pci-text-secondary);
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
+
+.zc-trigger-panel__item-badge {
+ margin-left: auto;
+ flex-shrink: 0;
+ font-size: var(--pci-font-size-sm);
+ color: var(--pci-text-tertiary);
+ border: 1px solid var(--pci-border);
+ border-radius: 4px;
+ padding: 0 4px;
+}
+
+/* ── 附件 chip ── */
+
+.zc-attachment-chip {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ max-width: 200px;
+ padding: 4px 8px;
+ border: 1px solid var(--pci-border);
+ border-radius: var(--pci-radius-sm);
+ background: var(--pci-bg-subtle);
+ font-size: var(--pci-font-size-sm);
+}
+
+.zc-attachment-chip__thumb {
+ width: 28px;
+ height: 28px;
+ object-fit: cover;
+ border-radius: 4px;
+}
+
+.zc-attachment-chip__remove {
+ border: none;
+ background: none;
+ color: var(--pci-text-tertiary);
+ cursor: pointer;
+ padding: 2px;
+}
+
+.zc-attachment-chip__remove:hover {
+ color: var(--pci-danger);
+}
+
+/* ── 输入区容器 ── */
+
+.zc-composer {
+ border: 1px solid var(--pci-border);
+ border-radius: var(--pci-radius-md);
+ background: var(--pci-bg);
+ font-size: var(--pci-font-size);
+ line-height: var(--pci-line-height);
+}
+
+.zc-composer[data-dragover="true"] {
+ border-color: var(--pci-accent);
+ background: var(--pci-accent-subtle);
+}
+
+/* ── 回到底部按钮 ── */
+
+.zc-back-to-bottom {
+ position: absolute;
+ right: 16px;
+ bottom: 16px;
+ padding: 6px 12px;
+ border: 1px solid var(--pci-border);
+ border-radius: 999px;
+ background: var(--pci-bg);
+ color: var(--pci-text);
+ font-size: var(--pci-font-size-sm);
+ box-shadow: var(--pci-panel-shadow);
+ cursor: pointer;
+}
+
+/* ── 滚动条 ── */
+
+.zc-scroll {
+ scrollbar-width: thin;
+ scrollbar-color: var(--pci-border-strong) transparent;
+}
+
+.zc-scroll::-webkit-scrollbar {
+ width: var(--pci-scrollbar-size);
+}
+
+.zc-scroll::-webkit-scrollbar-thumb {
+ background: var(--pci-border-strong);
+ border-radius: 5px;
+ border: 2px solid transparent;
+ background-clip: content-box;
+}

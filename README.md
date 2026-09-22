@@ -1,71 +1,47 @@
-# Pi Chat UI
+# Pi Chat Skills
 
-自包含的工作台式对话 UI 技能，面向 **React + Tauri + pi 0.86.1**。
+面向 **React + Tauri + pi 0.86.1** 工作台式对话应用的自包含技能集合。每个技能是独立可安装的参考包，互不依赖、可单装或同装。
 
-覆盖侧栏、流式 Markdown、模型消息适配、工具调用、思考过程和子代理详情。内置浅色/深色主题、组件参数、离线交互样板与合成事件，不需要获取外部 UI 产品仓库。
+| 技能 | 覆盖范围 |
+| --- | --- |
+| [pi-chat-ui](skills/pi-chat-ui/) | 整体布局与视觉基线：侧边栏、流式 Markdown、消息数据适配、工具调用、思考过程、子代理详情 |
+| [pi-chat-interactions](skills/pi-chat-interactions/) | 交互层：滚动跟随（贴底状态机）、贴图/拖放附件（pi `images`）、`/` 命令面板（pi `get_commands`）、`@` 文件模糊引用 |
 
-## 安装
-推荐使用 [skills CLI](https://skills.sh)（自动识别 Pi、Claude Code 等已安装的 agent 并建立链接，支持统一更新）：
+两个技能同项目并用时，视觉 token 以 pi-chat-ui 为准，交互 token（`--pci-*`）与其同源不冲突。
 
-```bash
-# 项目级安装（在目标项目根目录执行）
-npx skills add skywangc/pi-chat-ui
+## 安装（任选技能）
 
-# 全局安装（本机所有项目可用）
-npx skills add skywangc/pi-chat-ui -g
-```
-
-检查与更新已安装的技能：
+推荐 [skills CLI](https://skills.sh)（自动识别 Pi、Claude Code 等已安装的 agent 并建立链接）：
 
 ```bash
-npx skills check    # 检查更新
-npx skills update   # 更新全部技能
+# 项目级安装单个技能（在目标项目根目录执行）
+npx skills add skywangc/pi-chat-ui@pi-chat-ui
+npx skills add skywangc/pi-chat-ui@pi-chat-interactions
+
+# 全局安装
+npx skills add skywangc/pi-chat-ui@pi-chat-ui -g
+
+# 更新
+npx skills check && npx skills update
 ```
 
-也可以用 Git 直接安装到项目（若目标目录已存在，先检查，避免覆盖已有技能）：
+`@` 后为技能名；不带 `@` 执行 `npx skills add skywangc/pi-chat-ui` 会安装仓库内全部技能。
+
+也可以用 Git 克隆后按需复制：
 
 ```bash
-git clone https://github.com/skywangc/pi-chat-ui.git .agents/skills/pi-chat-ui
+git clone https://github.com/skywangc/pi-chat-ui.git
+cp -r pi-chat-ui/skills/pi-chat-ui .agents/skills/        # 按需换技能目录名
 ```
 
-支持 `.agents/skills` 的 coding agent 可以在项目中发现该技能。其他工具可把整个仓库目录放入其支持的技能目录，保留 `SKILL.md`、`references/`、`assets/` 的相对结构。
+每个技能目录保留 `SKILL.md`、`references/`、`assets/` 的相对结构，可放入任何支持技能的目录。
 
-也可以向支持安装 GitHub 技能的助手发送：
+## 添加新技能
 
-> 从 https://github.com/skywangc/pi-chat-ui 安装技能，名称为 pi-chat-ui，技能位于仓库根目录。
-
-## 使用
-
-在支持 `$` 调用方式的工具中：
-
-> 使用 $pi-chat-ui，实现侧边栏和主对话区；先用内置样例验证视觉和消息更新，再接入项目中的 pi 0.86.1。
-
-入口：[SKILL.md](SKILL.md)。接入步骤：[integration.md](references/integration.md)。
-
-## 离线样板
-
-直接用浏览器打开 `assets/reference-board.html`，或从仓库根目录启动本机静态服务：
-
-```bash
-python3 -m http.server 8769 --bind 127.0.0.1 --directory assets
-```
-
-访问 `http://127.0.0.1:8769/reference-board.html`。样板不请求模型服务，不加载 CDN 或外部字体。
-
-![浅色工作台](assets/reference-light.png)
-
-![深色与子代理详情](assets/reference-dark-child.png)
-
-## 校验与更新
-
-```bash
-python3 scripts/validate_bundle.py
-```
-
-通过 skills CLI 安装的技能，在本机任意位置执行 `npx skills update` 即可更新。用 Git 直接安装的，可在技能目录执行 `git pull --ff-only` 更新；有本地改动时先保存并核对差异。
-
-校验器检查本地引用、主题变量、离线资源和 RPC 样例格式。样板与截图是源码参数重建参考，不是原产品截图，也不代表实际 pi/provider 联调已完成。应用运行仍需要自己的 React、Tauri 和 pi 环境。
+1. 新建 `skills/<技能名>/`，入口为 `SKILL.md`（frontmatter：`name` + `description`）；
+2. 按需带 `references/`（按任务读取的规范）、`assets/`（token CSS、纯函数参考实现、离线样板）、`scripts/validate_bundle.py`（离线自检）、`licenses/`（上游归属）；
+3. 跑通包内校验后，在本 README 的技能表中加一行。
 
 ## 许可与来源
 
-本仓库按 [Apache-2.0](LICENSE) 分发；上游归属和适用的第三方许可保留在 [licenses](licenses/) 中。复制相关资产时同时保留对应声明。来源记录不构成运行依赖。
+本仓库按 [Apache-2.0](LICENSE) 分发。各技能的提炼来源、上游归属与第三方许可保留在各自 `licenses/` 中；复制资产时同时保留对应声明。

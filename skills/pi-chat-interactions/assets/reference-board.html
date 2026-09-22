@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>交互样板 — 滚动跟随 / 触发面板（重建参考，非原产品截图）</title>
+    <style>
+      /* 内联 token：与 interactions-tokens.css 同源 */
+      :root {
+        --pci-bg: #ffffff;
+        --pci-bg-subtle: #f7f7f8;
+        --pci-bg-muted: #ececee;
+        --pci-text: #1a1a1e;
+        --pci-text-secondary: #5c5c66;
+        --pci-text-tertiary: #8f8f9a;
+        --pci-border: rgba(0, 0, 0, 0.1);
+        --pci-border-strong: rgba(0, 0, 0, 0.16);
+        --pci-accent: #2f6fed;
+        --pci-accent-subtle: rgba(47, 111, 237, 0.1);
+        --pci-radius-md: 8px;
+        --pci-radius-sm: 6px;
+        --pci-font-size: 14px;
+        --pci-font-size-sm: 12.5px;
+        --pci-line-height: 1.55;
+        --pci-panel-max-height: 320px;
+        --pci-panel-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.14), 0 0 0 1px var(--pci-border);
+      }
+      [data-theme="dark"] {
+        --pci-bg: #1b1b1f;
+        --pci-bg-subtle: #222227;
+        --pci-bg-muted: #2c2c33;
+        --pci-text: #ededf0;
+        --pci-text-secondary: #a8a8b3;
+        --pci-text-tertiary: #71717c;
+        --pci-border: rgba(255, 255, 255, 0.12);
+        --pci-border-strong: rgba(255, 255, 255, 0.18);
+        --pci-accent: #5b8df5;
+        --pci-accent-subtle: rgba(91, 141, 245, 0.16);
+        --pci-panel-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--pci-border);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        font:
+          var(--pci-font-size)/var(--pci-line-height) -apple-system,
+          "Segoe UI",
+          "PingFang SC",
+          "Microsoft YaHei",
+          sans-serif;
+        background: var(--pci-bg-subtle);
+        color: var(--pci-text);
+        padding: 16px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      header h1 {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      header .note {
+        color: var(--pci-text-tertiary);
+        font-size: var(--pci-font-size-sm);
+      }
+      header button {
+        margin-left: auto;
+      }
+      button.btn {
+        border: 1px solid var(--pci-border);
+        border-radius: var(--pci-radius-sm);
+        background: var(--pci-bg);
+        color: var(--pci-text);
+        padding: 5px 10px;
+        font-size: var(--pci-font-size-sm);
+        cursor: pointer;
+      }
+      button.btn:hover {
+        border-color: var(--pci-border-strong);
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        height: calc(100vh - 70px);
+      }
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+        .pane {
+          height: 560px;
+        }
+      }
+      .pane {
+        background: var(--pci-bg);
+        border: 1px solid var(--pci-border);
+        border-radius: var(--pci-radius-md);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+      .pane > h2 {
+        font-size: var(--pci-font-size-sm);
+        font-weight: 600;
+        color: var(--pci-text-secondary);
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--pci-border);
+      }
+      .pane > h2 code {
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-accent);
+      }
+
+      /* ── 滚动演示 ── */
+      .timeline {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px 14px 4px;
+        position: relative;
+        scrollbar-width: thin;
+      }
+      .timeline::-webkit-scrollbar {
+        width: 10px;
+      }
+      .timeline::-webkit-scrollbar-thumb {
+        background: var(--pci-border-strong);
+        border-radius: 5px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      .msg {
+        margin-bottom: 14px;
+        max-width: 86%;
+      }
+      .msg .who {
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-tertiary);
+        margin-bottom: 3px;
+      }
+      .msg .bubble {
+        padding: 8px 11px;
+        border-radius: var(--pci-radius-md);
+        background: var(--pci-bg-subtle);
+        border: 1px solid var(--pci-border);
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+      }
+      .msg.user {
+        margin-left: auto;
+      }
+      .msg.user .bubble {
+        background: var(--pci-accent-subtle);
+        border-color: transparent;
+      }
+      .composerbar {
+        border-top: 1px solid var(--pci-border);
+        padding: 10px 14px;
+        position: relative;
+      }
+      .composerbar .fake-input {
+        border: 1px solid var(--pci-border);
+        border-radius: var(--pci-radius-md);
+        padding: 8px 11px;
+        color: var(--pci-text-tertiary);
+        background: var(--pci-bg-subtle);
+      }
+      #backToBottom {
+        position: absolute;
+        right: 16px;
+        bottom: 64px;
+        display: none;
+        border: 1px solid var(--pci-border);
+        border-radius: 999px;
+        background: var(--pci-bg);
+        color: var(--pci-text);
+        font-size: var(--pci-font-size-sm);
+        padding: 6px 12px;
+        box-shadow: var(--pci-panel-shadow);
+        cursor: pointer;
+      }
+      #state {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-tertiary);
+        background: var(--pci-bg-subtle);
+        border: 1px solid var(--pci-border);
+        border-radius: 999px;
+        padding: 2px 9px;
+      }
+
+      /* ── 输入演示 ── */
+      .inputpane-body {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 14px;
+      }
+      .trigger-panel {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 118px;
+        max-height: var(--pci-panel-max-height);
+        overflow-y: auto;
+        background: var(--pci-bg);
+        border-radius: var(--pci-radius-md);
+        box-shadow: var(--pci-panel-shadow);
+        padding: 4px;
+        display: none;
+      }
+      .trigger-panel .group {
+        padding: 6px 8px 2px;
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-tertiary);
+      }
+      .trigger-panel .item {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 6px 8px;
+        border-radius: var(--pci-radius-sm);
+        cursor: pointer;
+      }
+      .trigger-panel .item[data-active="true"] {
+        background: var(--pci-accent-subtle);
+      }
+      .trigger-panel .name {
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .trigger-panel .desc {
+        color: var(--pci-text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .trigger-panel .badge {
+        margin-left: auto;
+        flex-shrink: 0;
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-tertiary);
+        border: 1px solid var(--pci-border);
+        border-radius: 4px;
+        padding: 0 4px;
+      }
+      .composer {
+        border: 1px solid var(--pci-border);
+        border-radius: var(--pci-radius-md);
+        background: var(--pci-bg);
+      }
+      .composer .editor {
+        padding: 10px 11px;
+        min-height: 64px;
+        outline: none;
+      }
+      .composer .editor:empty::before {
+        content: attr(data-placeholder);
+        color: var(--pci-text-tertiary);
+      }
+      .composer .hint {
+        border-top: 1px solid var(--pci-border);
+        padding: 6px 11px;
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-tertiary);
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .composer .hint kbd {
+        border: 1px solid var(--pci-border);
+        border-radius: 4px;
+        padding: 0 4px;
+        font-size: var(--pci-font-size-sm);
+        background: var(--pci-bg-subtle);
+      }
+      #sent {
+        margin-top: 10px;
+        font-size: var(--pci-font-size-sm);
+        color: var(--pci-text-secondary);
+        overflow-wrap: anywhere;
+      }
+      #sent code {
+        background: var(--pci-bg-subtle);
+        border: 1px solid var(--pci-border);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>交互样板</h1>
+      <span class="note">源码参数重建 · 合成内容 · 不是原应用截图</span>
+      <button class="btn" id="themeToggle">切换深色</button>
+    </header>
+    <div class="layout">
+      <section class="pane">
+        <h2>滚动跟随：底部锚定状态机（<code>following</code> = 用户滚动权）</h2>
+        <div id="state">following: true</div>
+        <div class="timeline" id="timeline"></div>
+        <button id="backToBottom">↓ 回到底部</button>
+        <div class="composerbar">
+          <div class="fake-input">输入框（演示区，点击开始流式输出）</div>
+          <p
+            style="
+              font-size: var(--pci-font-size-sm);
+              color: var(--pci-text-tertiary);
+              margin-top: 6px;
+            "
+          >
+            流式输出中向上滚动 → 立即停住并出现按钮；滚回底部恢复跟随。
+          </p>
+        </div>
+      </section>
+
+      <section class="pane">
+        <h2>输入触发：`/` 命令 与 `@` 文件（同一面板协议）</h2>
+        <div class="inputpane-body">
+          <div class="trigger-panel" id="panel"></div>
+          <div class="composer">
+            <div
+              class="editor"
+              id="editor"
+              contenteditable="true"
+              data-placeholder="输入 / 看命令，输入 @ 找文件；↑↓ 选择，Enter 选中，Esc 关闭"
+            ></div>
+            <div class="hint">
+              <span><kbd>/</kbd> pi get_commands</span>
+              <span><kbd>@</kbd> 客户端文件索引</span>
+              <span>Enter 发送</span>
+            </div>
+          </div>
+          <div id="sent">
+            （尚未发送。发送后展示将提交给 pi 的 prompt 文本）
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      "use strict";
+      /* 渲染约定：本样板全部用 createElement/textContent/append 构建 DOM，不使用 innerHTML（防 XSS；与技能文档的实现约束一致）。 */
+      /* ── 底部锚定状态机（scroll-anchor.ts 的 vanilla 移植，语义与常量一致） ── */
+      const BOTTOM_EPSILON = 48,
+        UNOBSERVED_EPSILON = 2,
+        INTENT_TTL = 1200,
+        LAYOUT_GUARD = 250;
+      const metrics = (el) => ({
+        scrollTop: el.scrollTop,
+        viewportHeight: el.clientHeight,
+        contentHeight: el.scrollHeight,
+      });
+      const isAtBottom = (m) =>
+        Math.max(0, m.contentHeight - m.viewportHeight - m.scrollTop) <=
+        BOTTOM_EPSILON;
+      let following = true; // initialFollowing()
+      let lastObserved = 0,
+        programmaticFrame = null,
+        layoutGuardUntil = 0;
+      const intent = { value: "none", at: 0, touchY: null };
+      const timeline = document.getElementById("timeline");
+      const stateEl = document.getElementById("state");
+      const backBtn = document.getElementById("backToBottom");
+
+      function markProgrammatic() {
+        if (programmaticFrame) cancelAnimationFrame(programmaticFrame);
+        programmaticFrame = requestAnimationFrame(
+          () => (programmaticFrame = null),
+        );
+      }
+      function markIntent(v) {
+        if (v === "none") return;
+        intent.value = v;
+        intent.at = Date.now();
+        // 关键：明确向上 → 立即解除跟随（不等 scroll 事件，防 layout commit 夺权）
+        if (
+          v === "awayFromBottom" &&
+          timeline.scrollHeight > timeline.clientHeight
+        )
+          commitFollowing(false);
+      }
+      function activeIntent() {
+        const interacting = intent.touchY !== null;
+        if (interacting)
+          return intent.value === "none" ? "unknown" : intent.value;
+        return Date.now() - intent.at <= INTENT_TTL ? intent.value : "none";
+      }
+      function commitFollowing(v) {
+        following = v;
+        stateEl.textContent = "following: " + v;
+        backBtn.style.display =
+          !v && timeline.children.length > 0 ? "block" : "none";
+      }
+      function scrollToBottom() {
+        markProgrammatic();
+        timeline.scrollTop = timeline.scrollHeight;
+        lastObserved = timeline.scrollTop;
+      }
+      function reconcile(m) {
+        const i = activeIntent();
+        if (i === "awayFromBottom") return false;
+        if (i === "none") return following;
+        if (isAtBottom(m)) return true;
+        if (m.scrollTop < lastObserved - UNOBSERVED_EPSILON) return false;
+        return following;
+      }
+
+      timeline.addEventListener(
+        "wheel",
+        (e) =>
+          markIntent(
+            e.deltaY < 0
+              ? "awayFromBottom"
+              : e.deltaY > 0
+                ? "towardBottom"
+                : "none",
+          ),
+        { capture: true, passive: true },
+      );
+      timeline.addEventListener(
+        "touchstart",
+        (e) => (intent.touchY = e.touches[0]?.clientY ?? null),
+        { capture: true, passive: true },
+      );
+      timeline.addEventListener(
+        "touchmove",
+        (e) => {
+          const y = e.touches[0]?.clientY;
+          if (y == null || intent.touchY == null) return;
+          markIntent(
+            y > intent.touchY
+              ? "awayFromBottom"
+              : y < intent.touchY
+                ? "towardBottom"
+                : "none",
+          );
+          intent.touchY = y;
+        },
+        { capture: true, passive: true },
+      );
+      timeline.addEventListener("touchend", () => (intent.touchY = null), {
+        capture: true,
+      });
+      timeline.addEventListener(
+        "pointerdown",
+        (e) => {
+          if (e.target === timeline) markIntent("unknown");
+        },
+        { capture: true },
+      ); // 滚动条拖拽
+      timeline.addEventListener(
+        "keydown",
+        (e) => {
+          const editable =
+            e.target.isContentEditable ||
+            /INPUT|TEXTAREA/.test(e.target.tagName);
+          const up = ["ArrowUp", "PageUp", "Home"],
+            down = ["ArrowDown", "PageDown", "End"];
+          if (editable) return;
+          if (up.includes(e.key)) markIntent("awayFromBottom");
+          else if (down.includes(e.key)) markIntent("towardBottom");
+          else if (e.key === " ")
+            markIntent(e.shiftKey ? "awayFromBottom" : "towardBottom");
+        },
+        { capture: true },
+      );
+
+      timeline.addEventListener("scroll", () => {
+        const programmatic =
+          programmaticFrame !== null &&
+          Math.abs(timeline.scrollTop - lastObserved) < 1;
+        const i = activeIntent();
+        const source =
+          i !== "none"
+            ? "user"
+            : programmatic
+              ? "programmatic"
+              : Date.now() <= layoutGuardUntil
+                ? "layout"
+                : "user";
+        lastObserved = timeline.scrollTop;
+        if (source === "user") {
+          commitFollowing(isAtBottom(metrics(timeline)));
+        } // resolveFollowingAfterScroll
+      });
+      backBtn.addEventListener("click", () => {
+        commitFollowing(true);
+        scrollToBottom();
+      });
+
+      function addMsg(role, text) {
+        const div = document.createElement("div");
+        div.className = "msg " + role;
+        const who = document.createElement("div");
+        who.className = "who";
+        who.textContent = role === "user" ? "用户" : "助手";
+        div.append(who);
+        const b = document.createElement("div");
+        b.className = "bubble";
+        b.textContent = text;
+        div.append(b);
+        timeline.append(div);
+      }
+      /* 内容变化 → 贴底前先对账（竞态核心） */
+      function onContentChange() {
+        layoutGuardUntil = Date.now() + LAYOUT_GUARD;
+        commitFollowing(reconcile(metrics(timeline)));
+        if (following) scrollToBottom();
+      }
+      const STREAM_TEXT = [
+        "收到，我来分析这段滚动逻辑。",
+        "底部锚定的核心是把「用户滚动权」与「几何位置」分开：",
+        "1. 用户在底部 → following=true，delta 自动贴底；",
+        "2. 用户上滚 → following=false，绝不拉回；",
+        "3. scroll 事件晚一帧派发，所以每次贴底前要用 commit 时刻的实时指标对账。",
+        "以上就是不会跟用户抢滚动条的全部要点。",
+      ];
+      let streaming = false,
+        timers = [];
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const dark = document.documentElement.dataset.theme === "dark";
+        document.documentElement.dataset.theme = dark ? "" : "dark";
+      });
+      function seed() {
+        addMsg("user", "帮我总结聊天滚动处理的要点");
+        addMsg("assistant", STREAM_TEXT.slice(0, 5).join("\n"));
+        requestAnimationFrame(() => {
+          commitFollowing(true);
+          scrollToBottom();
+        });
+      }
+      function startStream() {
+        if (streaming) return;
+        streaming = true;
+        const who = document.createElement("div");
+        who.className = "msg assistant";
+        const whoLabel = document.createElement("div");
+        whoLabel.className = "who";
+        whoLabel.textContent = "助手（流式）";
+        who.append(whoLabel);
+        const b = document.createElement("div");
+        b.className = "bubble";
+        who.append(b);
+        timeline.append(who);
+        let i = 0,
+          j = 0;
+        const tick = () => {
+          if (i >= STREAM_TEXT.length) {
+            streaming = false;
+            return;
+          }
+          const line = STREAM_TEXT[i];
+          j += 2;
+          b.textContent =
+            STREAM_TEXT.slice(0, i).join("\n") +
+            (i ? "\n" : "") +
+            line.slice(0, j);
+          if (j >= line.length) {
+            i++;
+            j = 0;
+          }
+          onContentChange(); // delta 撑高走同一条对账通道
+          timers.push(setTimeout(tick, 40));
+        };
+        tick();
+      }
+      document
+        .querySelector(".composerbar .fake-input")
+        .addEventListener("click", startStream);
+      seed();
+
+      /* ── 触发面板演示（/ 与 @；fuzzy-match.ts 的 vanilla 移植） ── */
+      const editor = document.getElementById("editor");
+      const panel = document.getElementById("panel");
+      const sent = document.getElementById("sent");
+      const COMMANDS = [
+        { name: "model", desc: "切换模型", source: "extension" },
+        { name: "compact", desc: "压缩会话上下文", source: "extension" },
+        { name: "review", desc: "代码审查提示词模板", source: "prompt" },
+        { name: "plan", desc: "先规划后执行模板", source: "prompt" },
+        {
+          name: "skill:pi-chat-ui",
+          desc: "工作台对话 UI 技能",
+          source: "skill",
+        },
+        {
+          name: "skill:pi-chat-interactions",
+          desc: "滚动与输入交互技能",
+          source: "skill",
+        },
+      ];
+      const FILES = [
+        { name: "Chat.tsx", relativePath: "src/components/Chat.tsx" },
+        {
+          name: "ChatComposer.tsx",
+          relativePath: "src/components/ChatComposer.tsx",
+        },
+        {
+          name: "timelineScrollAnchor.ts",
+          relativePath: "src/v4/timelineScrollAnchor.ts",
+        },
+        {
+          name: "workspaceFileSearch.ts",
+          relativePath: "packages/shared/src/workspaceFileSearch.ts",
+        },
+        { name: "浏览器操作.md", relativePath: "docs/浏览器操作.md" },
+        { name: "data", relativePath: "assets/data/", dir: true },
+      ];
+      function scoreFuzzy(text, query) {
+        const t = text.trim().toLowerCase(),
+          q = query.trim().toLowerCase();
+        if (!t) return null;
+        if (!q) return 0;
+        if (t.startsWith(q)) return t.length - q.length;
+        const idx = t.indexOf(q);
+        if (idx !== -1) return 100 + idx;
+        let score = 200,
+          from = 0;
+        for (const ch of q) {
+          const at = t.indexOf(ch, from);
+          if (at === -1) return null;
+          score += at - from;
+          from = at + 1;
+        }
+        return score + (t.length - q.length);
+      }
+      const isHan = (q) => /\p{Script=Han}/u.test(q.trim());
+      function scoreFile(f, q) {
+        const n = scoreFuzzy(f.name, q),
+          p = scoreFuzzy(f.relativePath, q);
+        const best = Math.min(n ?? Infinity, p != null ? p + 25 : Infinity);
+        if (!Number.isFinite(best)) return null;
+        if (isHan(q) && best >= 200) return null; // 中文禁子序列兜底
+        return best;
+      }
+      function scoreCommand(c, q) {
+        const nameScore = scoreFuzzy(c.name, q);
+        const descScore = scoreFuzzy(c.desc, q);
+        return Math.min(
+          nameScore ?? Infinity,
+          descScore != null ? descScore + 250 : Infinity,
+        );
+      }
+      let active = null; // { trigger, query }
+      let selected = 0,
+        items = [];
+      function extractTrigger(text) {
+        // 简化演示：取光标前文本最后一个 token；完整正则见参考文档
+        const m = /(^|[\s\p{Script=Han}])((?:\/|@))([^\s/@$]*)$/u.exec(text);
+        if (!m) return null;
+        return { trigger: m[2], query: m[3] || "" };
+      }
+      function renderPanel() {
+        panel.replaceChildren();
+        if (!active) {
+          panel.style.display = "none";
+          return;
+        }
+        const q = active.query;
+        let groupLabel, rows;
+        if (active.trigger === "/") {
+          items = COMMANDS.map((c) => ({ ...c, score: scoreCommand(c, q) }))
+            .filter((x) => x.score !== null && Number.isFinite(x.score))
+            .sort((a, b) => a.score - b.score)
+            .slice(0, 12);
+          groupLabel = "命令 · pi get_commands";
+          rows = items.map((x) => ({
+            name: "/" + x.name,
+            desc: x.desc,
+            badge: x.source,
+          }));
+        } else {
+          items = FILES.map((f) => ({ ...f, score: scoreFile(f, q) }))
+            .filter((x) => x.score !== null)
+            .sort((a, b) => a.score - b.score || (a.dir ? 1 : 0))
+            .slice(0, 12);
+          groupLabel = "工作区文件 · 客户端索引";
+          rows = items.map((x) => ({
+            name: x.name,
+            desc: x.relativePath,
+            badge: x.dir ? "目录" : null,
+          }));
+        }
+        const group = document.createElement("div");
+        group.className = "group";
+        group.textContent = groupLabel;
+        panel.append(group);
+        rows.forEach((row, i) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.dataset.i = String(i);
+          if (i === selected) item.dataset.active = "true";
+          const name = document.createElement("span");
+          name.className = "name";
+          name.textContent = row.name;
+          const desc = document.createElement("span");
+          desc.className = "desc";
+          desc.textContent = row.desc;
+          item.append(name, desc);
+          if (row.badge) {
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = row.badge;
+            item.append(badge);
+          }
+          item.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            choose(i);
+          });
+          panel.append(item);
+        });
+        panel.style.display = "block";
+      }
+      function choose(i) {
+        const it = items[i];
+        if (!it || !active) return;
+        const text = editor.innerText;
+        const idx = text.lastIndexOf(active.trigger + active.query);
+        const head = idx >= 0 ? text.slice(0, idx) : text;
+        if (active.trigger === "@") {
+          const label = it.name,
+            dest = "./" + it.relativePath;
+          editor.innerText = head + "[" + label + "](" + dest + ") ";
+        } else {
+          editor.innerText = head + "/" + it.name + " ";
+        }
+        active = null;
+        renderPanel();
+        placeCaretEnd(editor);
+        editor.focus();
+      }
+      function placeCaretEnd(el) {
+        const r = document.createRange();
+        r.selectNodeContents(el);
+        r.collapse(false);
+        const s = getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+      }
+      editor.addEventListener("input", () => {
+        const sel = getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0).cloneRange();
+        range.selectNodeContents(editor);
+        range.setEnd(
+          sel.getRangeAt(0).endContainer,
+          sel.getRangeAt(0).endOffset,
+        );
+        const before = range.toString();
+        const next = extractTrigger(before);
+        if (
+          !next ||
+          next.trigger !== active?.trigger ||
+          next.query !== active?.query
+        )
+          selected = 0;
+        active = next;
+        renderPanel();
+      });
+      editor.addEventListener("keydown", (e) => {
+        if (!active) {
+          if (e.key === "Enter" && !e.isComposing && !e.shiftKey) {
+            e.preventDefault();
+            doSend();
+          }
+          return;
+        }
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          selected = (selected + 1) % Math.max(items.length, 1);
+          renderPanel();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          selected = (selected - 1 + items.length) % Math.max(items.length, 1);
+          renderPanel();
+        } else if ((e.key === "Enter" && !e.isComposing) || e.key === "Tab") {
+          e.preventDefault();
+          choose(selected);
+        } else if (e.key === "Escape") {
+          active = null;
+          renderPanel();
+        }
+      });
+      function doSend() {
+        const text = editor.innerText.trim();
+        if (!text) return;
+        editor.innerText = "";
+        sent.replaceChildren();
+        sent.append("提交给 pi 的 prompt 文本：");
+        const code = document.createElement("code");
+        code.textContent = text;
+        sent.append(code);
+        if (text.includes("](")) {
+          const note = document.createElement("span");
+          note.textContent =
+            "（mention 已是 markdown 链接，pi 收到后按路径读文件）";
+          sent.append(" ", note);
+        }
+        if (text.startsWith("/")) {
+          const note = document.createElement("span");
+          note.textContent =
+            "（pi 内部：扩展命令即时执行 → 技能展开 → 模板展开）";
+          sent.append(" ", note);
+        }
+      }
+    </script>
+  </body>
+</html>

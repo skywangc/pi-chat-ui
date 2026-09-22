@@ -1,0 +1,21 @@
+pi-chat-interactions bundle, derived from zai-org/ZCode commit
+872ad960de7ec172591f7e1952f7849229f94521 (Apache-2.0).
+
+assets/scroll-anchor.ts and assets/fuzzy-match.ts are distilled/adapted
+pure-function modules from the upstream UI sources (timeline bottom-anchor
+state machine; workspace file search scoring). Semantics and constant values
+are preserved; naming, comments and organization were reworked so the files
+stand alone without upstream types.
+
+references/ describe upstream behaviors (paste pipeline, trigger panels,
+scroll wiring) in newly authored prose with exact parameters; they do not
+copy upstream source text. assets/reference-board.html is a newly authored
+interactive reconstruction, not a screenshot or an original product build.
+
+pi protocol facts (RPC prompt/steer/follow_up images, get_commands /
+RpcSlashCommand, command expansion order) reference earendil-works/pi
+v0.86.1 (MIT); no pi source code is shipped in this bundle.
+
+No ZCode brand assets, dependencies or runtime are shipped in this bundle.
+Original upstream notice text is preserved as provenance only; its paths and
+URLs do not introduce a requirement to obtain the upstream repository.
