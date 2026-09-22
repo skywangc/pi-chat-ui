@@ -15,17 +15,17 @@
 
 ```bash
 # 项目级安装单个技能（在目标项目根目录执行）
-npx skills add skywangc/pi-chat-ui@pi-chat-ui
-npx skills add skywangc/pi-chat-ui@pi-chat-interactions
+npx skills add skywangc/pi-chat-ui -s pi-chat-ui
+npx skills add skywangc/pi-chat-ui -s pi-chat-interactions
 
 # 全局安装
-npx skills add skywangc/pi-chat-ui@pi-chat-ui -g
+npx skills add skywangc/pi-chat-ui -s pi-chat-ui -g
 
 # 更新
 npx skills check && npx skills update
 ```
 
-`@` 后为技能名；不带 `@` 执行 `npx skills add skywangc/pi-chat-ui` 会安装仓库内全部技能。
+`-s` 指定要安装的技能名；省略 `-s` 会安装仓库内全部技能。
 
 也可以用 Git 克隆后按需复制：
 

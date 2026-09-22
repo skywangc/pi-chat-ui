@@ -9,10 +9,10 @@
 
 ```bash
 # 项目级安装（在目标项目根目录执行）
-npx skills add skywangc/pi-chat-ui@pi-chat-ui
+npx skills add skywangc/pi-chat-ui -s pi-chat-ui
 
 # 全局安装（本机所有项目可用）
-npx skills add skywangc/pi-chat-ui@pi-chat-ui -g
+npx skills add skywangc/pi-chat-ui -s pi-chat-ui -g
 ```
 
 检查与更新已安装的技能：
