@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pi Chat UI"
+  short_description: "离线参考包：用 React、Tauri、pi 复刻侧栏、对话与代理交互"
+  default_prompt: "使用 $pi-chat-ui，仅使用技能包内的离线规范、CSS 和样板，无需读取外部产品仓库，为 React + Tauri + pi 0.86.1 实现指定页面，并验证流式消息、工具与子代理展示。"

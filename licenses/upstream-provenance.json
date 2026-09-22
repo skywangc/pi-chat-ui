@@ -1,0 +1,61 @@
+{
+  "zcodeCommit": "872ad960de7ec172591f7e1952f7849229f94521",
+  "piVersion": "0.86.1",
+  "piCommit": "13cbf77df2396303013a41646bcfa77b4271ae56",
+  "upstreamRequired": false,
+  "sources": [
+    {
+      "path": "DESIGN.md",
+      "sha256": "3d67b96892c790edd29cc5f02e3418099e8c4b3a1c446529cce35898284fc47a"
+    },
+    {
+      "path": "packages/ui/src/styles.css",
+      "sha256": "22d5b58e44cdebdbe7154c418ee05fef6dde689e384f0dd590d4057739487be7"
+    },
+    {
+      "path": "packages/ui/src/workspace-grouped-tasks/types.ts",
+      "sha256": "fc44991ee9621ea59b5d74c46756414fcc283cb91bed84bb50e918f09aa1080e"
+    },
+    {
+      "path": "packages/ui/src/v4/conversationLayout.ts",
+      "sha256": "13a9986849b51b79be3206bb0d44b1b18c28b93cdb255ad00555b45e9ba6588a"
+    },
+    {
+      "path": "packages/ui/src/components/ai-elements/message.tsx",
+      "sha256": "6c35829ed11321e850cd59e20c1c88fdd452e8e2d9b5da45f808371021aabf99"
+    },
+    {
+      "path": "packages/ui/src/components/ai-elements/reasoning.tsx",
+      "sha256": "a10a38c7b3ca633e9b5480ad94f9c7a1fdd52bc5526ae0801e3e6ed141f2b604"
+    },
+    {
+      "path": "packages/ui/src/ToolCallBlocks/ToolLayout.tsx",
+      "sha256": "91ca396f414fcafc915c010d0e67b0199c6c1f7ac090c24d857bb4ea7cb70367"
+    },
+    {
+      "path": "packages/ui/src/ToolCallBlocks/ToolSummaryRow.tsx",
+      "sha256": "81a0c2f954a73b81ff4ed113d56a3fb6b594d66e3a8358c910a2a25cef922715"
+    },
+    {
+      "path": "packages/ui/src/prompt-editor/ChatPromptEditor.tsx",
+      "sha256": "a560c7b3711fc2b0dacd036d205313bf5fe91fb09389082110e9f118fa18d96c"
+    },
+    {
+      "path": "packages/ui/src/components/ai-elements/markdown-list.tsx",
+      "sha256": "ecf50ad4f48cd460ddcf90db7b463671f915d8c22c7cb8e7760ff3b02282c7f1"
+    },
+    {
+      "path": "packages/ui/src/components/ai-elements/markdown-table.tsx",
+      "sha256": "612d78092eaeb950931070fff2a194a244e84c5c2d63c6df645e6b91391953da"
+    },
+    {
+      "path": "packages/ui/src/components/ai-elements/markdown-blockquote.tsx",
+      "sha256": "0c76599780a464136703d40d07172dcc62730dee1ce01a155100cf4712440a7f"
+    },
+    {
+      "path": "packages/ui/src/components/ui/button.tsx",
+      "sha256": "3bf0b1573c940999f875a1dd5e67a32e7d9bcb3e320774fa8277f5c00748b32b"
+    }
+  ],
+  "visualEvidence": "Source-derived reconstruction; not original runtime screenshots."
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>工作台式对话 UI · 离线样板 · 非原应用截图</title>
+  <link rel="icon" href="./sample-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./chat-ui-tokens.css"><link rel="stylesheet" href="./chat-ui-components.css">
+  <style>body{margin:0}.spec-label{font-size:12px}.chat-ui-brand{font-weight:600}#app{gap:0}#conversation{margin-right:4px}#sidebar{margin-right:0}.chat-ui-sidepane .chat-ui-turn{gap:16px}</style>
+</head>
+<body class="chat-ui-root" data-theme="light">
+<svg hidden aria-hidden="true"><defs>
+ <symbol id="folder" viewBox="0 0 24 24"><path d="M3 7V5h6l2 2h10v13H3Z"/></symbol>
+ <symbol id="brain" viewBox="0 0 24 24"><path d="M12 5c-4-6-10 1-6 4-5 2-3 8 0 8 0 5 6 5 6 0V5Zm0 0c4-6 10 1 6 4 5 2 3 8 0 8 0 5-6 5-6 0V5Z"/></symbol>
+ <symbol id="file" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5Z M14 3v6h5 M8 13h8 M8 17h6"/></symbol>
+ <symbol id="terminal" viewBox="0 0 24 24"><path d="m4 6 6 6-6 6 M13 18h7"/></symbol>
+ <symbol id="agent" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2c0-6 16-6 16 0v2"/></symbol>
+ <symbol id="panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+</defs></svg>
+<header class="chat-ui-spec-bar"><p><strong>离线组件样板</strong> <span class="chat-ui-muted spec-label">源码参数重建 · 合成内容 · 不是原应用截图</span></p><button id="theme" class="chat-ui-btn" type="button">切换深色</button><button id="reset" class="chat-ui-btn" type="button">恢复布局</button></header>
+<main id="app" class="chat-ui-app">
+ <aside id="sidebar" class="chat-ui-sidebar" aria-label="会话侧边栏">
+  <div class="chat-ui-sidebar-head"><span class="chat-ui-brand">Workspace</span><button id="collapse" type="button" class="chat-ui-btn chat-ui-icon-btn" aria-label="收起侧栏" aria-expanded="true"><svg><use href="#panel"/></svg></button></div>
+  <div class="chat-ui-sidebar-actions chat-ui-sidebar-body"><button class="chat-ui-btn" type="button" id="new-task">＋ 新建会话</button><button class="chat-ui-btn chat-ui-icon-btn" type="button" id="search-toggle" aria-label="搜索会话">⌕</button></div>
+  <div class="chat-ui-sidebar-body" id="search-box" hidden style="padding:0 8px 8px"><input id="search" aria-label="搜索会话标题" placeholder="搜索会话" style="width:100%;background:var(--color-input);border:1px solid var(--color-border);border-radius:6px;padding:4px 8px"></div>
+  <div class="chat-ui-sidebar-list chat-ui-sidebar-body">
+   <section class="chat-ui-group"><div class="chat-ui-group-head"><span class="chat-ui-faint">⌃</span><span class="chat-ui-group-title">置顶</span><span class="chat-ui-count">1</span></div><button class="chat-ui-task" data-title="桌面工作台复刻" type="button"><span class="chat-ui-task-line"><span class="chat-ui-task-title">桌面工作台复刻</span><span class="chat-ui-task-meta">昨天</span></span></button></section>
+   <section class="chat-ui-group"><div class="chat-ui-group-head"><svg><use href="#folder"/></svg><span class="chat-ui-group-title">pi-desktop</span><span class="chat-ui-count">4</span></div><div class="chat-ui-group-content">
+    <button class="chat-ui-task" type="button" data-title="实现会话与工具展示" aria-current="page"><span class="chat-ui-task-line"><span class="chat-ui-task-title">实现会话与工具展示</span><span class="chat-ui-task-meta">刚刚</span></span></button>
+    <button class="chat-ui-task" type="button" data-title="检查事件适配器"><span class="chat-ui-task-line"><span class="chat-ui-dot" data-state="running" aria-label="运行中"></span><span class="chat-ui-task-title">检查事件适配器</span><span class="chat-ui-task-meta">运行中</span></span></button>
+    <button class="chat-ui-task" type="button" data-title="确认工作区访问"><span class="chat-ui-task-line"><span class="chat-ui-task-title">确认工作区访问</span><span class="chat-ui-waiting">等待确认</span></span></button>
+    <button class="chat-ui-task" type="button" data-title="这是一个很长的会话标题用于测试省略号是否挤走状态"><span class="chat-ui-task-line"><span class="chat-ui-dot" data-state="unread" aria-label="未读"></span><span class="chat-ui-task-title">这是一个很长的会话标题用于测试省略号是否挤走状态</span><span class="chat-ui-task-meta">5 分钟</span></span></button>
+   </div></section>
+   <section class="chat-ui-group"><div class="chat-ui-group-head"><svg><use href="#folder"/></svg><span class="chat-ui-group-title">playground</span><span class="chat-ui-count">1</span></div><button class="chat-ui-task" type="button" data-title="构建失败排查"><span class="chat-ui-task-line"><span class="chat-ui-dot" data-state="error" aria-label="错误"></span><span class="chat-ui-task-title">构建失败排查</span><span class="chat-ui-task-meta">昨天</span></span></button></section>
+  </div>
+  <footer class="chat-ui-sidebar-foot chat-ui-sidebar-body"><span class="chat-ui-dot"></span><span class="chat-ui-muted">本地工作区</span><span class="chat-ui-task-meta" style="margin-left:auto">样板数据</span></footer>
+ </aside>
+ <div id="resize" class="chat-ui-resize" role="separator" tabindex="0" aria-label="调整侧栏宽度" aria-orientation="vertical" aria-valuemin="264" aria-valuemax="700" aria-valuenow="264"></div>
+ <section id="conversation" class="chat-ui-frame chat-ui-conversation" aria-label="主对话">
+  <header class="chat-ui-header"><span id="conversation-title" class="chat-ui-header-title">实现会话与工具展示</span><button id="child-toggle" type="button" class="chat-ui-btn chat-ui-icon-btn" aria-label="打开子代理详情"><svg><use href="#panel"/></svg></button></header>
+  <div class="chat-ui-timeline"><div class="chat-ui-content">
+   <div class="chat-ui-user">把侧边栏、Markdown 和工具调用接到 pi。</div>
+   <article class="chat-ui-turn">
+    <details><summary class="chat-ui-summary"><svg><use href="#brain"/></svg><span class="chat-ui-kind">已思考</span><span class="chat-ui-faint">· 3 秒</span></summary><div class="chat-ui-reasoning-body">这是合成的思考展示样例。
+保留换行，**这里不解析为 Markdown 粗体**。
+用户展开之后，后续状态更新不应把这个块重新收起。</div></details>
+    <details><summary class="chat-ui-summary"><svg><use href="#file"/></svg><span class="chat-ui-kind">读取</span><span class="chat-ui-summary-text chat-ui-mono">src/adapter.ts</span></summary><div class="chat-ui-tool-body"><pre class="chat-ui-tool-output">export function reduceEvent(state, event) {
+  return updateContentBlock(state, event);
+}</pre></div></details>
+    <details><summary class="chat-ui-summary"><svg><use href="#terminal"/></svg><span class="chat-ui-kind">执行</span><span class="chat-ui-summary-text chat-ui-mono">pnpm typecheck</span><span class="chat-ui-faint">已完成</span></summary><div class="chat-ui-tool-body"><pre class="chat-ui-tool-output">示例输出：类型检查通过。
+这不是目标应用实际运行结果。</pre></div></details>
+    <button id="child-card" type="button" class="chat-ui-summary"><svg><use href="#agent"/></svg><span class="chat-ui-kind">子代理</span><span class="chat-ui-summary-text">检查流式事件归属</span><span class="chat-ui-faint">已完成 ↗</span></button>
+    <div class="chat-ui-markdown"><h2>界面与数据分开处理</h2><p>正文按 <strong>内容块顺序</strong> 展示；工具结果通过 <code>toolCallId</code> 回填到原来的工具行。</p><ul><li>文本增量追加，终态消息覆盖对账。</li><li>累计工具输出替换，避免重复。</li><li>思考和子代理使用独立展示区域。</li></ul><div class="chat-ui-code"><div class="chat-ui-code-head"><span>typescript</span><button type="button" class="chat-ui-btn chat-ui-btn-sm" id="copy">复制</button></div><pre><code id="code">const key = `${sessionId}:${toolCallId}`;
+tools.set(key, partialResult);</code></pre></div><div class="chat-ui-table-wrap"><table><thead><tr><th>内容</th><th>更新方式</th></tr></thead><tbody><tr><td>text_delta</td><td>追加片段</td></tr><tr><td>partialResult</td><td>替换累计结果</td></tr></tbody></table></div></div>
+    <div class="chat-ui-actions"><button type="button" class="chat-ui-btn" id="copy-answer">复制回复</button></div>
+   </article>
+  </div></div>
+  <div class="chat-ui-composer-dock"><div class="chat-ui-content"><div class="chat-ui-composer"><textarea id="draft" aria-label="对话输入框" placeholder="继续描述你的任务…"></textarea><div class="chat-ui-composer-tools"><div class="chat-ui-composer-leading"><span class="chat-ui-muted">＋</span><span class="chat-ui-muted">模型 · 样板</span><span class="chat-ui-faint">/</span><span class="chat-ui-muted">思考：中</span></div><button class="chat-ui-btn chat-ui-icon-btn chat-ui-btn-primary" type="button" id="send" aria-label="发送样板消息">↑</button></div></div><span class="chat-ui-faint spec-label" id="sample-status" aria-live="polite">仅展示样式与交互，不连接模型。</span></div></div>
+ </section>
+ <aside id="child-pane" class="chat-ui-frame chat-ui-sidepane" aria-label="子代理详情" hidden><header class="chat-ui-header"><span class="chat-ui-header-title">检查流式事件归属</span><button id="child-close" type="button" class="chat-ui-btn chat-ui-icon-btn" aria-label="关闭子代理详情">×</button></header><div class="chat-ui-sidepane-body"><div class="chat-ui-turn"><span class="chat-ui-faint">本次执行记录 · 只读 · 合成数据</span><details><summary class="chat-ui-summary"><svg><use href="#brain"/></svg><span class="chat-ui-kind">已思考</span></summary><div class="chat-ui-reasoning-body">独立的子任务内容，不混入父会话正文。</div></details><details><summary class="chat-ui-summary"><svg><use href="#file"/></svg><span class="chat-ui-kind">读取</span><span class="chat-ui-mono">events.ts</span></summary><pre class="chat-ui-tool-output">合成的文件读取结果。</pre></details><div class="chat-ui-markdown"><p>检查结果：按会话和调用 ID 关联，保持工具调用顺序。</p><blockquote><p>关闭这个详情只关闭视图，不代表取消任务。</p></blockquote></div></div></div></aside>
+</main>
+<section class="chat-ui-state-grid" aria-label="状态样例">
+ <div class="chat-ui-spec-card"><h2>正在思考</h2><details><summary class="chat-ui-summary"><svg><use href="#brain"/></svg><span class="chat-ui-kind chat-ui-running">思考中</span><span class="chat-ui-faint">·</span><span class="chat-ui-summary-text chat-ui-muted">检查消息边界…</span></summary><div class="chat-ui-reasoning-body">合成的运行中思考内容。</div></details></div>
+ <div class="chat-ui-spec-card"><h2>等待输入</h2><span class="chat-ui-waiting">等待确认</span><p class="chat-ui-muted">使用确认专用绿色，不表示执行成功。</p></div>
+ <div class="chat-ui-spec-card"><h2>工具失败</h2><details><summary class="chat-ui-summary"><svg><use href="#terminal"/></svg><span class="chat-ui-kind">执行</span><span style="color:var(--color-destructive)">失败</span></summary><pre class="chat-ui-tool-output">合成错误：文件不存在。</pre></details></div>
+</section>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const storage = { get(key) { try { return localStorage.getItem(key); } catch { return null; } }, set(key,value) { try { localStorage.setItem(key,value); } catch {} } };
+ const app = $('app'), sidebar = $('sidebar');
+ function theme(mode) { document.body.dataset.theme = mode; $('theme').textContent = mode === 'dark' ? '切换浅色' : '切换深色'; storage.set('chat-ui-board-theme',mode); }
+ theme(storage.get('chat-ui-board-theme') === 'dark' ? 'dark' : 'light');
+ $('theme').onclick = () => theme(document.body.dataset.theme === 'dark' ? 'light' : 'dark');
+ function width(value) { const max = Math.max(264,app.clientWidth*.5), next = Math.round(Math.min(max,Math.max(264,value))); document.body.style.setProperty('--chat-ui-sidebar-width',next+'px'); $('resize').setAttribute('aria-valuenow',next); $('resize').setAttribute('aria-valuemax',Math.round(max)); storage.set('chat-ui-board-width',next); }
+ const savedWidth = Number(storage.get('chat-ui-board-width')); width(Number.isFinite(savedWidth) && savedWidth > 0 ? savedWidth : 264);
+ $('collapse').onclick = () => { const collapsed = sidebar.dataset.collapsed !== 'true'; sidebar.dataset.collapsed = String(collapsed); $('collapse').setAttribute('aria-expanded',String(!collapsed)); $('collapse').setAttribute('aria-label',collapsed?'展开侧栏':'收起侧栏'); $('resize').hidden = collapsed; };
+ $('resize').onkeydown = e => { if(e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); width(sidebar.getBoundingClientRect().width+(e.key==='ArrowRight'?16:-16)); } };
+ $('resize').onpointerdown = e => { const start=e.clientX, original=sidebar.getBoundingClientRect().width; $('resize').setPointerCapture(e.pointerId); const move=ev=>width(original+ev.clientX-start); const stop=()=>{ $('resize').removeEventListener('pointermove',move); $('resize').removeEventListener('pointerup',stop); $('resize').removeEventListener('pointercancel',stop); }; $('resize').addEventListener('pointermove',move); $('resize').addEventListener('pointerup',stop); $('resize').addEventListener('pointercancel',stop); };
+ $('child-card').onclick = $('child-toggle').onclick = () => { $('child-pane').hidden=false; };
+ $('child-close').onclick = () => { $('child-pane').hidden=true; $('child-card').focus(); };
+ $('reset').onclick = () => { width(264); sidebar.dataset.collapsed='false'; $('resize').hidden=false; $('collapse').setAttribute('aria-expanded','true'); $('collapse').setAttribute('aria-label','收起侧栏'); $('child-pane').hidden=true; };
+ $('search-toggle').onclick = () => { $('search-box').hidden=!$('search-box').hidden; if(!$('search-box').hidden) $('search').focus(); };
+ $('search').oninput = () => { document.querySelectorAll('.chat-ui-task').forEach(row=>{ row.hidden=!row.dataset.title.includes($('search').value); }); };
+ document.querySelectorAll('.chat-ui-task').forEach(row=>row.onclick=()=>{ document.querySelectorAll('.chat-ui-task').forEach(other=>other.removeAttribute('aria-current')); row.setAttribute('aria-current','page'); $('conversation-title').textContent=row.dataset.title; $('sample-status').textContent='演示选中态；正文仍是固定样板，不代表真实会话切换。'; });
+ $('new-task').onclick = () => { $('draft').value=''; $('draft').focus(); $('sample-status').textContent='样板只清空输入，不创建真实会话。'; };
+ $('send').onclick = () => { $('sample-status').textContent=$('draft').value.trim()?'这是离线样板，输入已保留；没有发送模型请求。':'请先输入任务描述。'; };
+ async function copy(text,button) { try { if(!navigator.clipboard) throw new Error('clipboard unavailable'); await navigator.clipboard.writeText(text); button.textContent='已复制'; } catch { button.textContent='请手动选择复制'; } }
+ $('copy').onclick=()=>copy($('code').textContent,$('copy'));
+ $('copy-answer').onclick=()=>{ const content=document.querySelector('.chat-ui-markdown').cloneNode(true); content.querySelectorAll('button').forEach(button=>button.remove()); copy(content.textContent,$('copy-answer')); };
+})();
+</script>
+</body></html>
