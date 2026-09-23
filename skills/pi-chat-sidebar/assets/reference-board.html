@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>侧边栏样板 — 会话列表状态 / 分组 / 宽度缩放（重建参考，非原产品截图）</title>
+<style>
+/* 内联 token：与 sidebar-tokens.css 同源（--pcb-*） */
+:root {
+  --pcb-bg:#f7f7f8; --pcb-bg-alt:#f2f2f4; --pcb-bg-hover:rgba(0,0,0,.05); --pcb-bg-selected:rgba(47,111,237,.12);
+  --pcb-text:#1a1a1e; --pcb-text-secondary:#5c5c66; --pcb-text-tertiary:#8f8f9a;
+  --pcb-border:rgba(0,0,0,.1); --pcb-border-focused:rgba(47,111,237,.6);
+  --pcb-accent:#2f6fed; --pcb-success:#16a34a; --pcb-success-bg:rgba(22,163,74,.1); --pcb-success-bg-hover:rgba(22,163,74,.14);
+  --pcb-destructive:#dc2626; --pcb-unread:#0ea5e9;
+  --pcb-width:264px; --pcb-header-h:36px; --pcb-group-header-h:32px; --pcb-row-h:28px;
+  --pcb-row-radius:8px; --pcb-row-pad-left:10px; --pcb-row-pad-right:4px;
+  --pcb-group-indent:16px; --pcb-group-line-pad:8px; --pcb-indicator-size:6px; --pcb-spinner-size:14px;
+  --pcb-marquee-fade:1.5rem;
+  --pcb-transition:background-color .2s ease-out,border-color .2s ease-out,color .2s ease-out,opacity .2s ease-out;
+  --pcb-group-gray-bg:#d4d4d8; --pcb-group-blue-bg:#7dd3fc; --pcb-group-green-bg:#6ee7b7;
+  --pcb-content-bg:#ffffff; --pcb-shadow:0 8px 24px rgba(0,0,0,.14),0 0 0 1px var(--pcb-border);
+}
+[data-theme="dark"] {
+  --pcb-bg:#17171a; --pcb-bg-alt:#1b1b1f; --pcb-bg-hover:rgba(255,255,255,.06); --pcb-bg-selected:rgba(91,141,245,.16);
+  --pcb-text:#ededf0; --pcb-text-secondary:#a8a8b3; --pcb-text-tertiary:#71717c;
+  --pcb-border:rgba(255,255,255,.12); --pcb-border-focused:rgba(91,141,245,.65);
+  --pcb-accent:#5b8df5; --pcb-success:#4ade80; --pcb-success-bg:rgba(74,222,128,.1); --pcb-success-bg-hover:rgba(74,222,128,.14);
+  --pcb-destructive:#f87171; --pcb-unread:#38bdf8;
+  --pcb-group-gray-bg:rgba(161,161,170,.32); --pcb-group-blue-bg:rgba(56,189,248,.32); --pcb-group-green-bg:rgba(52,211,153,.32);
+  --pcb-content-bg:#1b1b1f; --pcb-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px var(--pcb-border);
+}
+* { box-sizing:border-box; margin:0; }
+body { font:14px/1.55 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--pcb-bg-alt); color:var(--pcb-text); padding:16px; }
+header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+header h1 { font-size:15px; font-weight:600; }
+header .note { color:var(--pcb-text-tertiary); font-size:12.5px; }
+header button { margin-left:auto; }
+.btn { border:1px solid var(--pcb-border); border-radius:8px; background:var(--pcb-content-bg); color:var(--pcb-text); padding:5px 10px; font-size:12.5px; cursor:pointer; }
+.layout { display:flex; gap:0; height:calc(100vh - 70px); border:1px solid var(--pcb-border); border-radius:8px; overflow:hidden; background:var(--pcb-content-bg); }
+.sidebar { width:var(--pcb-width); min-width:var(--pcb-width); background:var(--pcb-bg); border-right:1px solid var(--pcb-border); display:flex; flex-direction:column; overflow:hidden; transition:none; }
+.sidebar__header { height:var(--pcb-header-h); flex-shrink:0; display:flex; align-items:center; gap:4px; padding:0 6px; border-bottom:1px solid var(--pcb-border); }
+.iconbtn { width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:none; background:none; border-radius:8px; color:var(--pcb-text-secondary); cursor:pointer; }
+.iconbtn:hover { background:var(--pcb-bg-hover); color:var(--pcb-text); }
+.headerbtn { flex:1; display:flex; align-items:center; gap:8px; height:28px; padding:0 8px; border:none; background:none; border-radius:8px; color:var(--pcb-text-secondary); font-size:13px; cursor:pointer; }
+.headerbtn:hover { background:var(--pcb-bg-hover); color:var(--pcb-text); }
+.sessionlist { flex:1; overflow-y:auto; padding:4px 6px 8px; }
+.groupline { height:var(--pcb-group-header-h); display:flex; align-items:center; gap:4px; border-radius:var(--pcb-row-radius); border:1px solid transparent; padding:0 4px 0 6px; cursor:pointer; transition:var(--pcb-transition); }
+.groupline:hover { background:var(--pcb-bg-hover); }
+.groupline .chev { font-size:10px; color:var(--pcb-text-tertiary); transition:transform .15s; width:12px; }
+.groupline[data-collapsed="true"] .chev { transform:rotate(-90deg); }
+.groupline .gdot { width:8px; height:8px; border-radius:3px; }
+.groupline .gname { font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.groupline .gcount { min-width:20px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:2px 6px; font-size:11px; background:var(--pcb-bg-hover); color:var(--pcb-text-secondary); }
+.groupcontent { margin-left:var(--pcb-group-indent); border-left:1px solid var(--pcb-border); padding:1px 0 1px 8px; }
+.groupcontent[data-collapsed="true"] { display:none; }
+.row { position:relative; min-height:var(--pcb-row-h); border-radius:var(--pcb-row-radius); border:1px solid transparent; padding:0 4px 0 10px; cursor:pointer; transition:var(--pcb-transition); }
+.row:hover { background:var(--pcb-bg-hover); }
+.row[data-active="true"] { background:var(--pcb-bg-selected); }
+.row__line { height:var(--pcb-row-h); display:flex; align-items:center; gap:8px; min-width:0; }
+.row__indicator { width:16px; height:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.row__dot { width:var(--pcb-indicator-size); height:var(--pcb-indicator-size); border-radius:999px; }
+.row__dot[data-kind="error"] { background:var(--pcb-destructive); }
+.row__dot[data-kind="unread"] { background:var(--pcb-unread); }
+.row__spinner { width:var(--pcb-spinner-size); height:var(--pcb-spinner-size); border:2px solid var(--pcb-text-tertiary); border-top-color:transparent; border-radius:999px; animation:pcb-spin 1s linear infinite; }
+@keyframes pcb-spin { to { transform:rotate(360deg); } }
+.row__titlewrap { min-width:0; flex:1; overflow:hidden; white-space:nowrap; mask-image:linear-gradient(to right, black 0, black calc(100% - var(--pcb-marquee-fade)), transparent 100%); -webkit-mask-image:linear-gradient(to right, black 0, black calc(100% - var(--pcb-marquee-fade)), transparent 100%); }
+.row__titlewrap[data-marquee="true"]:hover .row__titletrack { animation:pcb-marquee var(--pcb-marquee-duration,8s) linear 1s infinite; }
+.row__titletrack { display:inline-block; }
+@keyframes pcb-marquee { 0% { transform:translateX(0); } 45% { transform:translateX(calc(-1 * var(--pcb-marquee-distance,60px))); } 55% { transform:translateX(calc(-1 * var(--pcb-marquee-distance,60px))); } 100% { transform:translateX(0); } }
+.row__meta { margin-left:auto; display:flex; flex-shrink:0; align-items:center; gap:6px; font-size:11.5px; color:var(--pcb-text-tertiary); }
+.row:hover .row__meta[data-kind="info"], .row:focus-within .row__meta[data-kind="info"] { display:none; }
+.row__meta[data-kind="attention"] { display:flex !important; }
+.attention { height:20px; display:inline-flex; align-items:center; border-radius:999px; padding:0 8px; font-size:13px; font-weight:500; background:var(--pcb-success-bg); color:var(--pcb-success); }
+.row__actions { display:none; margin-left:auto; align-items:center; gap:2px; }
+.row:hover .row__actions, .row:focus-within .row__actions { display:flex; }
+@media (hover:none) { .row__actions { display:flex; } }
+.draftrow { height:var(--pcb-row-h); display:flex; align-items:center; gap:8px; border-radius:var(--pcb-row-radius); border:1px dashed var(--pcb-border); padding:0 4px 0 10px; cursor:pointer; transition:var(--pcb-transition); background:var(--pcb-success-bg); border-color:rgba(47,111,237,.2); }
+.draftrow:hover { background:var(--pcb-success-bg-hover); }
+.draftrow[data-active="true"] { background:var(--pcb-bg-selected); border-color:rgba(47,111,237,.35); }
+.resizer { width:5px; cursor:col-resize; background:transparent; flex-shrink:0; }
+.resizer:hover, .resizer.active { background:var(--pcb-border-focused); }
+.content { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--pcb-text-tertiary); font-size:13px; gap:8px; min-width:0; }
+.content kbd { border:1px solid var(--pcb-border); border-radius:4px; padding:1px 5px; font-size:12px; }
+.rail { width:var(--pcb-header-h); background:var(--pcb-bg-alt); border-right:1px solid var(--pcb-border); display:none; flex-direction:column; }
+.rail__btn { width:28px; height:28px; margin:4px auto; display:flex; align-items:center; justify-content:center; border:none; background:none; border-radius:8px; color:var(--pcb-text-secondary); cursor:pointer; font-size:14px; }
+.rail__btn:hover { background:var(--pcb-bg-hover); color:var(--pcb-text); }
+.shell[data-collapsed="true"] .sidebar, .shell[data-collapsed="true"] .resizer { display:none; }
+.shell[data-collapsed="true"] .rail { display:flex; }
+.ctxmenu { position:fixed; display:none; z-index:50; min-width:180px; background:var(--pcb-content-bg); border-radius:8px; box-shadow:var(--pcb-shadow); padding:4px; }
+.ctxmenu button { display:flex; width:100%; align-items:center; border:none; background:none; color:var(--pcb-text); font-size:13px; padding:6px 8px; border-radius:6px; cursor:pointer; text-align:left; }
+.ctxmenu button:hover { background:var(--pcb-bg-hover); }
+.ctxmenu .sep { height:1px; background:var(--pcb-border); margin:4px 2px; }
+#hint { margin-top:10px; font-size:12.5px; color:var(--pcb-text-tertiary); }
+</style>
+</head>
+<body>
+<header>
+  <h1>侧边栏样板</h1>
+  <span class="note">源码参数重建 · 合成内容 · 不是原产品截图</span>
+  <button class="btn" id="themeToggle">切换深色</button>
+</header>
+<div class="shell" id="shell">
+  <div class="rail"><button class="rail__btn" id="railExpand" title="展开侧边栏">▶</button></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <button class="iconbtn" id="collapseBtn" title="收起侧边栏">◀</button>
+      <button class="headerbtn" id="newSessionBtn">＋ 新会话</button>
+      <button class="iconbtn" id="searchBtn" title="搜索会话">⌕</button>
+    </div>
+    <div class="sessionlist" id="list"></div>
+  </aside>
+  <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" tabindex="0"></div>
+  <main class="content">
+    <div>会话内容区（演示区）</div>
+    <div>拖动分隔条调宽（264px ~ 容器 50%）；聚焦分隔条按 ←/→ 步进 16px，Home/End 到最小/最大</div>
+    <div>行 hover 换动作按钮；长标题 hover 1s 走马灯；右键行看菜单</div>
+    <div id="hint">运行中的会话会排到各组的运行层（演示：每 3 秒推进一次时间标签）</div>
+  </main>
+</div>
+<div class="ctxmenu" id="ctxmenu"></div>
+<script>
+"use strict";
+/* 渲染约定：全部用 createElement/textContent/append 构建 DOM，不使用 innerHTML（防 XSS）。 */
+/* ── sidebar-model.ts 的 vanilla 移植（语义与常量一致） ── */
+const SIDEBAR_MIN = 264, MAX_RATIO = 0.5, KEY_STEP = 16, COLLAPSE_AT = 360, IDLE_MS = 300;
+function deriveIndicator(activity, meta) {
+  if (activity.phase === "error") return "error";
+  if (!activity && meta.status === "error") return "error";
+  if (typeof meta.unreadAt === "number") return "unread";
+  if (activity.phase === "prewarming" || activity.phase === "running") return "loading";
+  return "none";
+}
+function isRunning(activity) { return activity.phase === "prewarming" || activity.phase === "running"; }
+function relativeTime(ts, now) {
+  const m = Math.floor((now - ts) / 60000);
+  if (m < 1) return "刚刚";
+  if (m < 60) return m + " 分钟前";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + " 小时前";
+  return Math.floor(h / 24) + " 天前";
+}
+function clampWidth(w, container) {
+  const max = container > 0 ? Math.max(SIDEBAR_MIN, container * MAX_RATIO) : Infinity;
+  return Math.round(Math.max(SIDEBAR_MIN, Math.min(w, max)));
+}
+
+/* ── 合成数据：activity 为实时线，meta 为成员线 ── */
+const NOW = Date.now();
+const GROUPS = [
+  { id: "pinned", name: "置顶", color: "gray" },
+  { id: "g1", name: "pi-desktop", color: "blue" },
+  { id: "g2", name: "实验", color: "green" },
+];
+const ROWS = [
+  { key: "r1", group: "pinned", title: "桌面工作台复刻", activity: { phase: "completedSuccess" }, meta: {}, updated: NOW - 22 * 3600e3 },
+  { key: "r2", group: "g1", title: "实现会话与工具展示", activity: { phase: "completedSuccess" }, meta: {}, updated: NOW - 3 * 60e3 },
+  { key: "r3", group: "g1", title: "检查事件适配器（运行中）", activity: { phase: "running" }, meta: {}, updated: NOW - 0 },
+  { key: "r4", group: "g1", title: "确认工作区访问（等待输入）", activity: { phase: "running", pendingInteractions: { permissionCount: 0, userInputCount: 2 } }, meta: {}, updated: NOW - 60e3 },
+  { key: "r5", group: "g1", title: "这是一个很长的会话标题用于验证右侧渐隐与 hover 一秒后的走马灯滚动效果", activity: { phase: "completedSuccess" }, meta: { unreadAt: NOW - 5 * 60e3 }, updated: NOW - 5 * 60e3 },
+  { key: "r6", group: "g1", title: "适配器联调（上次未收尾）", activity: {}, meta: { status: "streaming" }, updated: NOW - 26 * 3600e3 },
+  { key: "r7", group: "g2", title: "渲染层回归（出错）", activity: { phase: "error" }, meta: {}, updated: NOW - 2 * 3600e3 },
+];
+const collapsedGroups = new Set();
+let activeKey = "r3";
+
+const list = document.getElementById("list");
+const shell = document.getElementById("shell");
+const sidebarEl = document.getElementById("sidebar");
+
+function el(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+function buildRow(row) {
+  const indicator = deriveIndicator(row.activity, row.meta);
+  const attention = row.activity.pendingInteractions
+    ? row.activity.pendingInteractions.permissionCount + row.activity.pendingInteractions.userInputCount
+    : 0;
+  const wrap = el("div", "row");
+  wrap.dataset.key = row.key;
+  wrap.dataset.active = String(row.key === activeKey);
+  const line = el("div", "row__line");
+  const ind = el("span", "row__indicator");
+  if (indicator === "loading") { const sp = el("span", "row__spinner"); ind.append(sp); }
+  else if (indicator !== "none") { const dot = el("span", "row__dot"); dot.dataset.kind = indicator; ind.append(dot); }
+  line.append(ind);
+  const titleWrap = el("span", "row__titlewrap");
+  const track = el("span", "row__titletrack", row.title);
+  titleWrap.append(track);
+  // 走马灯：真实排版宽 > 容器宽才启用（避免副本撑大 scrollWidth 的误判）
+  requestAnimationFrame(() => {
+    const distance = track.scrollWidth - titleWrap.clientWidth;
+    if (distance > 8) {
+      titleWrap.dataset.marquee = "true";
+      titleWrap.style.setProperty("--pcb-marquee-distance", distance + "px");
+      titleWrap.style.setProperty("--pcb-marquee-duration", Math.max(6, distance / 40) + "s");
+    }
+  });
+  line.append(titleWrap);
+  const meta = el("span", "row__meta");
+  meta.dataset.kind = attention > 0 ? "attention" : "info";
+  if (attention > 0) {
+    const badge = el("span", "attention", row.activity.pendingInteractions.userInputCount > 0 ? "需要输入 ×2" : "待授权");
+    meta.append(badge);
+  } else {
+    meta.append(document.createTextNode(relativeTime(row.updated, Date.now())));
+  }
+  line.append(meta);
+  const actions = el("span", "row__actions");
+  const more = el("button", "iconbtn", "⋯");
+  more.addEventListener("click", (e) => { e.stopPropagation(); openMenu(e, row); });
+  actions.append(more);
+  line.append(actions);
+  wrap.append(line);
+  wrap.addEventListener("click", () => {
+    activeKey = row.key;
+    if (typeof row.meta.unreadAt === "number") row.meta.unreadAt = undefined; // 点开即读（乐观）
+    render();
+  });
+  wrap.addEventListener("contextmenu", (e) => { e.preventDefault(); openMenu(e, row); });
+  return wrap;
+}
+function buildGroup(group) {
+  const rows = ROWS.filter((r) => r.group === group.id);
+  const frag = document.createDocumentFragment();
+  const header = el("div", "groupline");
+  header.dataset.collapsed = String(collapsedGroups.has(group.id));
+  header.append(el("span", "chev", "▼"));
+  const dot = el("span", "gdot");
+  dot.style.background = "var(--pcb-group-" + group.color + "-bg)";
+  header.append(dot, el("span", "gname", group.name), el("span", "gcount", String(rows.length)));
+  const content = el("div", "groupcontent");
+  content.dataset.collapsed = String(collapsedGroups.has(group.id));
+  // 运行层置顶：running 在前，组内按 updated 降序
+  const sorted = [...rows].sort((a, b) => {
+    const ra = isRunning(a.activity) ? 1 : 0, rb = isRunning(b.activity) ? 1 : 0;
+    if (ra !== rb) return rb - ra;
+    return b.updated - a.updated;
+  });
+  for (const row of sorted) content.append(buildRow(row));
+  header.addEventListener("click", () => {
+    if (collapsedGroups.has(group.id)) collapsedGroups.delete(group.id);
+    else collapsedGroups.add(group.id);
+    render();
+  });
+  frag.append(header, content);
+  return frag;
+}
+function render() {
+  list.replaceChildren();
+  const draft = el("div", "draftrow");
+  draft.dataset.active = String(activeKey === "__draft__");
+  draft.append(el("span", null, "＋ 新会话（草稿）"));
+  draft.addEventListener("click", () => { activeKey = "__draft__"; render(); });
+  list.append(draft);
+  for (const group of GROUPS) list.append(buildGroup(group));
+}
+render();
+setInterval(render, 30000); // 相对时间定时刷新
+
+/* ── 宽度缩放（拖拽 + 键盘） ── */
+const resizer = document.getElementById("resizer");
+let drag = null;
+resizer.addEventListener("pointerdown", (e) => {
+  drag = { startX: e.clientX, startW: sidebarEl.getBoundingClientRect().width, pointerId: e.pointerId };
+  shell.dataset.resizing = "true";
+  resizer.classList.add("active");
+  resizer.setPointerCapture(e.pointerId);
+});
+resizer.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const container = shell.getBoundingClientRect().width;
+  const next = clampWidth(drag.startW + (drag.startX - e.clientX), container);
+  sidebarEl.style.width = sidebarEl.style.minWidth = next + "px";
+  resizer.setAttribute("aria-valuenow", String(next));
+});
+resizer.addEventListener("pointerup", () => {
+  drag = null;
+  shell.dataset.resizing = "false";
+  resizer.classList.remove("active");
+});
+resizer.addEventListener("keydown", (e) => {
+  const container = shell.getBoundingClientRect().width;
+  const cur = sidebarEl.getBoundingClientRect().width;
+  let next = null;
+  if (e.key === "ArrowLeft") next = cur - KEY_STEP;
+  else if (e.key === "ArrowRight") next = cur + KEY_STEP;
+  else if (e.key === "Home") next = SIDEBAR_MIN;
+  else if (e.key === "End") next = Math.max(SIDEBAR_MIN, container * MAX_RATIO);
+  if (next === null) return;
+  e.preventDefault();
+  const v = clampWidth(next, container);
+  sidebarEl.style.width = sidebarEl.style.minWidth = v + "px";
+  resizer.setAttribute("aria-valuenow", String(v));
+});
+
+/* ── 折叠 / 展开 ── */
+document.getElementById("collapseBtn").addEventListener("click", () => { shell.dataset.collapsed = "true"; });
+document.getElementById("railExpand").addEventListener("click", () => { shell.dataset.collapsed = "false"; });
+
+/* ── 右键菜单 ── */
+const ctx = document.getElementById("ctxmenu");
+function openMenu(e, row) {
+  ctx.replaceChildren();
+  for (const label of ["移入分组 ▸", "从分组移出", "移到顶部", "重命名", "归档", "标为未读"]) {
+    const item = el("button", null, label);
+    item.addEventListener("click", () => { ctx.style.display = "none"; });
+    ctx.append(item);
+  }
+  ctx.append(el("div", "sep"));
+  for (const label of ["复制工作区路径", "复制会话文件路径", "复制会话 ID"]) {
+    const item = el("button", null, label);
+    item.addEventListener("click", () => { ctx.style.display = "none"; });
+    ctx.append(item);
+  }
+  ctx.style.left = Math.min(e.clientX, window.innerWidth - 200) + "px";
+  ctx.style.top = Math.min(e.clientY, window.innerHeight - 260) + "px";
+  ctx.style.display = "block";
+}
+document.addEventListener("click", (e) => {
+  if (!ctx.contains(e.target)) ctx.style.display = "none";
+});
+document.getElementById("themeToggle").addEventListener("click", () => {
+  document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "" : "dark";
+});
+</script>
+</body>
+</html>

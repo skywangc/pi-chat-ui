@@ -1,0 +1,21 @@
+pi-chat-sidebar bundle, derived from zai-org/ZCode commit
+872ad960de7ec172591f7e1952f7849229f94521 (Apache-2.0).
+
+assets/sidebar-model.ts is a distilled/adapted pure-function module from the
+upstream UI sources (sidebar row indicator derivation, active-layer sorting,
+relative time formatting, sidebar width clamping). Semantics and constant
+values are preserved; naming and organization were reworked so the file
+stands alone without upstream types.
+
+references/ describe upstream behaviors (dual-index session list, grouping
+and preferences, marquee title overflow, layout resize and auto-collapse)
+in newly authored prose with exact parameters; they do not copy upstream
+source text. The interactive board is a newly authored reconstruction, not
+a screenshot or an original product build.
+
+pi protocol facts (SessionInfo, sessions directory layout, listSessions,
+RPC get_state/get_tree/new_session/switch_session/set_session_name)
+reference earendil-works/pi v0.86.1 (MIT); no pi source code is shipped in
+this bundle.
+
+No ZCode brand assets, dependencies or runtime are shipped in this bundle.

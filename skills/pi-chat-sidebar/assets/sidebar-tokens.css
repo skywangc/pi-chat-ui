@@ -1,0 +1,341 @@
+/*
+ * 侧边栏 token 子集（自包含，不依赖 Tailwind 编译、CDN 或外部字体）。
+ * 与 pi-chat-ui 的主题 token 同源；单独使用本包时以本文件为准。
+ * 约定：--pcb-* 前缀；浅色为默认，[data-theme="dark"] 覆盖。
+ */
+
+:root {
+  /* 背景（侧栏比主内容浅一档） */
+  --pcb-bg: #f7f7f8;
+  --pcb-bg-alt: #f2f2f4;
+  --pcb-bg-hover: rgba(0, 0, 0, 0.05);
+  --pcb-bg-selected: rgba(47, 111, 237, 0.12);
+
+  /* 文本 */
+  --pcb-text: #1a1a1e;
+  --pcb-text-secondary: #5c5c66;
+  --pcb-text-tertiary: #8f8f9a;
+
+  /* 边框 */
+  --pcb-border: rgba(0, 0, 0, 0.1);
+  --pcb-border-focused: rgba(47, 111, 237, 0.6);
+
+  /* 状态色 */
+  --pcb-accent: #2f6fed;
+  --pcb-success: #16a34a;
+  --pcb-success-bg: rgba(22, 163, 74, 0.1);
+  --pcb-success-bg-hover: rgba(22, 163, 74, 0.14);
+  --pcb-destructive: #dc2626;
+  --pcb-unread: #0ea5e9; /* 未读蓝点：与普通任务列表共用天蓝 */
+
+  /* 几何 */
+  --pcb-width: 264px;              /* 默认=最小宽度 */
+  --pcb-max-ratio: 0.5;            /* 占容器最大比例 */
+  --pcb-header-h: 36px;            /* 侧栏头部/rail 头 */
+  --pcb-group-header-h: 32px;      /* 组头 h-8 */
+  --pcb-row-h: 28px;               /* 会话行 h-7 */
+  --pcb-row-radius: 8px;
+  --pcb-row-pad-left: 10px;
+  --pcb-row-pad-right: 4px;
+  --pcb-group-indent: 16px;        /* 组内容 ml-4 */
+  --pcb-group-line-pad: 8px;       /* 组内容 pl-2 */
+  --pcb-indicator-size: 6px;       /* error/unread 点 size-1.5 */
+  --pcb-spinner-size: 14px;        /* 转圈 size-3.5 */
+  --pcb-badge-min-w: 20px;         /* 计数徽章 min-w-5 */
+
+  /* 标题走马灯 */
+  --pcb-marquee-fade: 1.5rem;      /* 渐隐带宽 */
+  --pcb-marquee-speed: 40px/s;     /* 滚动速度 */
+  --pcb-marquee-gap: 24px;
+
+  /* 动效 */
+  --pcb-transition: background-color 0.2s ease-out, border-color 0.2s ease-out,
+    color 0.2s ease-out, opacity 0.2s ease-out;
+
+  /* 分组 7 色（底色 + 文字，浅色） */
+  --pcb-group-gray-bg: #d4d4d8;   --pcb-group-gray-fg: #27272a;
+  --pcb-group-red-bg: #fda4af;    --pcb-group-red-fg: #4c0519;
+  --pcb-group-orange-bg: #fdba74; --pcb-group-orange-fg: #7c2d12;
+  --pcb-group-yellow-bg: #fcd34d; --pcb-group-yellow-fg: #713f12;
+  --pcb-group-green-bg: #6ee7b7;  --pcb-group-green-fg: #064e3b;
+  --pcb-group-blue-bg: #7dd3fc;   --pcb-group-blue-fg: #0c4a6e;
+  --pcb-group-purple-bg: #c4b5fd; --pcb-group-purple-fg: #4c1d95;
+}
+
+[data-theme="dark"] {
+  --pcb-bg: #17171a;
+  --pcb-bg-alt: #1b1b1f;
+  --pcb-bg-hover: rgba(255, 255, 255, 0.06);
+  --pcb-bg-selected: rgba(91, 141, 245, 0.16);
+
+  --pcb-text: #ededf0;
+  --pcb-text-secondary: #a8a8b3;
+  --pcb-text-tertiary: #71717c;
+
+  --pcb-border: rgba(255, 255, 255, 0.12);
+  --pcb-border-focused: rgba(91, 141, 245, 0.65);
+
+  --pcb-accent: #5b8df5;
+  --pcb-success: #4ade80;
+  --pcb-success-bg: rgba(74, 222, 128, 0.1);
+  --pcb-success-bg-hover: rgba(74, 222, 128, 0.14);
+  --pcb-destructive: #f87171;
+  --pcb-unread: #38bdf8;
+
+  /* 分组 7 色（深色：半透明底 + 亮文字） */
+  --pcb-group-gray-bg: rgba(161, 161, 170, 0.32); --pcb-group-gray-fg: #f4f4f5;
+  --pcb-group-red-bg: rgba(251, 113, 133, 0.32);  --pcb-group-red-fg: #fff1f2;
+  --pcb-group-orange-bg: rgba(251, 146, 60, 0.32);--pcb-group-orange-fg: #fff7ed;
+  --pcb-group-yellow-bg: rgba(252, 211, 77, 0.32);--pcb-group-yellow-fg: #fefce8;
+  --pcb-group-green-bg: rgba(52, 211, 153, 0.32); --pcb-group-green-fg: #ecfdf5;
+  --pcb-group-blue-bg: rgba(56, 189, 248, 0.32);  --pcb-group-blue-fg: #f0f9ff;
+  --pcb-group-purple-bg: rgba(196, 181, 253, 0.32);--pcb-group-purple-fg: #f5f3ff;
+}
+
+/* ── 侧栏容器 ── */
+
+.pcb-sidebar {
+  width: var(--pcb-width);
+  background: var(--pcb-bg);
+  border-right: 1px solid var(--pcb-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pcb-sidebar__header {
+  height: var(--pcb-header-h);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--pcb-border);
+}
+
+/* 折叠窄轨 */
+.pcb-rail {
+  width: var(--pcb-header-h);
+  background: var(--pcb-bg-alt);
+  border-right: 1px solid var(--pcb-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 分隔条（拖拽缩放） */
+.pcb-resizer {
+  width: 5px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color 0.15s;
+}
+
+.pcb-resizer:hover,
+.pcb-resizer:focus-visible {
+  background: var(--pcb-border-focused);
+}
+
+.pcb-shell[data-resizing="true"] * {
+  transition: none !important; /* 拖拽期间禁用一切过渡，防相邻面板抖动 */
+}
+
+/* ── 分组 ── */
+
+.pcb-group__header {
+  height: var(--pcb-group-header-h);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--pcb-row-radius);
+  border: 1px solid transparent;
+  padding: 0 4px 0 6px;
+  font-size: 14px;
+  transition: var(--pcb-transition);
+}
+
+.pcb-group__header:hover {
+  background: var(--pcb-bg-hover);
+}
+
+.pcb-group__count {
+  min-width: var(--pcb-badge-min-w);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--pcb-text-secondary);
+  background: var(--pcb-bg-hover);
+}
+
+.pcb-group__content {
+  margin-left: var(--pcb-group-indent);
+  border-left: 1px solid var(--pcb-border);
+  padding: 1px 0 1px var(--pcb-group-line-pad);
+}
+
+.pcb-group__content[data-collapsed="true"] {
+  display: none;
+}
+
+/* ── 会话行 ── */
+
+.pcb-row {
+  min-height: var(--pcb-row-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  border-radius: var(--pcb-row-radius);
+  border: 1px solid transparent;
+  padding: 0 var(--pcb-row-pad-right) 0 var(--pcb-row-pad-left);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--pcb-transition);
+}
+
+.pcb-row:hover {
+  background: var(--pcb-bg-hover);
+}
+
+.pcb-row[data-active="true"] {
+  background: var(--pcb-bg-selected);
+}
+
+.pcb-row__line {
+  height: var(--pcb-row-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pcb-row__indicator {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pcb-row__dot {
+  width: var(--pcb-indicator-size);
+  height: var(--pcb-indicator-size);
+  border-radius: 999px;
+}
+
+.pcb-row__dot[data-kind="error"] { background: var(--pcb-destructive); }
+.pcb-row__dot[data-kind="unread"] { background: var(--pcb-unread); }
+
+.pcb-row__spinner {
+  width: var(--pcb-spinner-size);
+  height: var(--pcb-spinner-size);
+  animation: pcb-spin 1s linear infinite;
+  color: var(--pcb-text-tertiary);
+}
+
+@keyframes pcb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pcb-row__title {
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  /* 标题溢出：右侧渐隐（不用省略号） */
+  mask-image: linear-gradient(to right, black 0, black calc(100% - var(--pcb-marquee-fade)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0, black calc(100% - var(--pcb-marquee-fade)), transparent 100%);
+}
+
+.pcb-row__meta {
+  margin-left: auto;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--pcb-text-tertiary);
+}
+
+.pcb-row:hover .pcb-row__meta[data-kind="info"],
+.pcb-row:focus-within .pcb-row__meta[data-kind="info"] {
+  display: none; /* hover/focus 隐常规 meta，换动作按钮；交互胶囊(meta-kind=attention)不隐 */
+}
+
+.pcb-row__actions {
+  display: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.pcb-row:hover .pcb-row__actions,
+.pcb-row:focus-within .pcb-row__actions {
+  display: flex;
+}
+
+@media (hover: none) {
+  .pcb-row__actions { display: flex; }
+  .pcb-row:hover .pcb-row__meta[data-kind="info"] { display: flex; }
+}
+
+/* 注意胶囊（等待授权/输入） */
+.pcb-attention {
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--pcb-success-bg);
+  color: var(--pcb-success);
+}
+
+[data-theme="dark"] .pcb-attention {
+  background: rgba(74, 222, 128, 0.18);
+}
+
+/* 草稿行（新会话） */
+.pcb-draft-row {
+  height: var(--pcb-row-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--pcb-row-radius);
+  border: 1px dashed var(--pcb-border);
+  padding: 0 var(--pcb-row-pad-right) 0 var(--pcb-row-pad-left);
+  cursor: pointer;
+  transition: var(--pcb-transition);
+}
+
+.pcb-draft-row[data-active="true"] {
+  background: var(--pcb-bg-selected);
+  border-color: rgba(47, 111, 237, 0.35);
+}
+
+.pcb-draft-row:not([data-active="true"]) {
+  background: var(--pcb-success-bg);
+  border-color: rgba(47, 111, 237, 0.2);
+}
+
+.pcb-draft-row:not([data-active="true"]):hover {
+  background: var(--pcb-success-bg-hover);
+}
+
+/* 分组颜色组名点 */
+.pcb-group__dot[data-color="gray"] { background: var(--pcb-group-gray-bg); }
+.pcb-group__dot[data-color="red"] { background: var(--pcb-group-red-bg); }
+.pcb-group__dot[data-color="orange"] { background: var(--pcb-group-orange-bg); }
+.pcb-group__dot[data-color="yellow"] { background: var(--pcb-group-yellow-bg); }
+.pcb-group__dot[data-color="green"] { background: var(--pcb-group-green-bg); }
+.pcb-group__dot[data-color="blue"] { background: var(--pcb-group-blue-bg); }
+.pcb-group__dot[data-color="purple"] { background: var(--pcb-group-purple-bg); }

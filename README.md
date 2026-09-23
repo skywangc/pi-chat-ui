@@ -4,10 +4,11 @@
 
 | 技能 | 覆盖范围 |
 | --- | --- |
-| [pi-chat-ui](skills/pi-chat-ui/) | 整体布局与视觉基线：侧边栏、流式 Markdown、消息数据适配、工具调用、思考过程、子代理详情 |
+| [pi-chat-ui](skills/pi-chat-ui/) | 整体布局与视觉基线：流式 Markdown、消息数据适配、工具调用、思考过程、子代理详情 |
 | [pi-chat-interactions](skills/pi-chat-interactions/) | 交互层：滚动跟随（贴底状态机）、贴图/拖放附件（pi `images`）、`/` 命令面板（pi `get_commands`）、`@` 文件模糊引用 |
+| [pi-chat-sidebar](skills/pi-chat-sidebar/) | 会话侧边栏：双索引行状态（运行/未读/出错/等待输入）、运行层置顶、分组与整理偏好、标题走马灯、宽度缩放与折叠、右键菜单、pi 会话数据组装 |
 
-两个技能同项目并用时，视觉 token 以 pi-chat-ui 为准，交互 token（`--pci-*`）与其同源不冲突。
+三个技能同项目并用时，视觉 token 以 pi-chat-ui 为准，交互 token（`--pci-*`）与侧栏 token（`--pcb-*`）与其同源不冲突。
 
 ## 安装（任选技能）
 
@@ -17,6 +18,7 @@
 # 项目级安装单个技能（在目标项目根目录执行）
 npx skills add skywangc/pi-chat-ui -s pi-chat-ui
 npx skills add skywangc/pi-chat-ui -s pi-chat-interactions
+npx skills add skywangc/pi-chat-ui -s pi-chat-sidebar
 
 # 全局安装
 npx skills add skywangc/pi-chat-ui -s pi-chat-ui -g

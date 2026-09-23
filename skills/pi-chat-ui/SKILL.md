@@ -1,6 +1,6 @@
 ---
 name: pi-chat-ui
-description: 使用自包含的离线规范、主题 CSS 和组件样板，在 React + Tauri + pi 0.86.1 项目中实现紧凑、清晰的工作台式对话 UI/UX，重点覆盖侧边栏、对话 Markdown、模型流式协议、工具调用、思考块及子代理详情。用于这些界面的实现、迁移和对照验收；不是通用网站设计或 pi 后端功能开发技能。
+description: 使用自包含的离线规范、主题 CSS 和组件样板，在 React + Tauri + pi 0.86.1 项目中实现紧凑、清晰的工作台式对话 UI/UX，重点覆盖对话 Markdown、模型流式协议、工具调用、思考块及子代理详情（侧边栏概要见包内参考，深入实现用 pi-chat-sidebar 技能）。用于这些界面的实现、迁移和对照验收；不是通用网站设计或 pi 后端功能开发技能。
 ---
 
 # Pi Chat UI
@@ -23,7 +23,7 @@ description: 使用自包含的离线规范、主题 CSS 和组件样板，在 R
 | 任务 | 必读参考 |
 |---|---|
 | 主题、尺寸、窗口、整体布局 | [视觉基线](references/visual.md) + [组件参数](references/component-recipes.md)；细查规范时读 [内置设计规范](references/design-system.md) |
-| 侧栏、会话列表、未读和运行状态 | [侧栏](references/sidebar.md) |
+| 侧栏概要（深入实现用 pi-chat-sidebar 技能） | [侧栏](references/sidebar.md) |
 | 正文、代码、表格、链接、流式滚动 | [Markdown](references/markdown.md) |
 | 模型数据、事件 reducer、消息恢复 | [pi 0.86.1 协议](references/pi-protocol.md) |
 | 工具调用、分组、思考过程 | [工具与思考](references/tools-thinking.md) + 协议 |

@@ -2,7 +2,7 @@
 
 自包含的工作台式对话 UI 技能，面向 **React + Tauri + pi 0.86.1**。
 
-覆盖侧栏、流式 Markdown、模型消息适配、工具调用、思考过程和子代理详情。内置浅色/深色主题、组件参数、离线交互样板与合成事件，不需要获取外部 UI 产品仓库。
+覆盖流式 Markdown、模型消息适配、工具调用、思考过程和子代理详情（侧边栏概要见包内参考，深入实现用 pi-chat-sidebar 技能）。内置浅色/深色主题、组件参数、离线交互样板与合成事件，不需要获取外部 UI 产品仓库。
 
 ## 安装
 推荐使用 [skills CLI](https://skills.sh)（自动识别 Pi、Claude Code 等已安装的 agent 并建立链接，支持统一更新）：
@@ -39,7 +39,7 @@ cp -r pi-chat-ui/skills/pi-chat-ui .agents/skills/
 
 在支持 `$` 调用方式的工具中：
 
-> 使用 $pi-chat-ui，实现侧边栏和主对话区；先用内置样例验证视觉和消息更新，再接入项目中的 pi 0.86.1。
+> 使用 $pi-chat-ui，实现主对话区（侧边栏用 $pi-chat-sidebar）；先用内置样例验证视觉和消息更新，再接入项目中的 pi 0.86.1。
 
 入口：[SKILL.md](SKILL.md)。接入步骤：[integration.md](references/integration.md)。
 
